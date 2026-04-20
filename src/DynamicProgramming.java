@@ -86,6 +86,23 @@ public class DynamicProgramming {
             take=can2(nums,dp, target-nums[i], i-1);
         }return dp[i][target] = take||skip;
     }
+    static boolean can3(int[] nums,int target){
+        int n=nums.length;
+        boolean[] prev=new boolean[target+1];
+        prev[0]=true;
+        if(nums[0]<target) prev[nums[0]]=true;
+        for(int i=1;i<n;i++){
+            boolean[] curr=new boolean[target+1];
+            curr[0]=true;
+            for(int t=1;t<=target;t++){
+                boolean skip=prev[t];
+                boolean take=false;
+                if(nums[i]<=t){
+                    take=prev[t-nums[i]];
+                }curr[t]= skip || take;
+            }prev=curr;
+        }return prev[target];
+    }
     static boolean canPartition(int[] nums){
         if(nums.length<2) return false;
         int n=nums.length;
@@ -94,11 +111,11 @@ public class DynamicProgramming {
             sum+=val;
         }if(sum%2!=0) return false;
         sum/=2;
-        Boolean[][] dp=new Boolean[n][sum+1];
-        return can2(nums,dp, sum,n-1);
-    }
+        // Boolean[][] dp=new Boolean[n][sum+1];
+        return can3(nums, sum);
+    } 
     public static void main(String[] args){
-        int[] arr={1,5,11,5};
+        int[] arr={1,2,3,5};
         int[] dp=new int[arr.length];
         Arrays.fill(dp,-1);
         System.out.println(canPartition(arr));
