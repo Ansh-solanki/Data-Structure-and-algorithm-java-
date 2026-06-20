@@ -136,145 +136,21 @@ public class John {
         }return max;
         
     }
-
-//  Binary search Tree
-    static void printTree(TreeNode root){
-        if(root==null) return;
-        System.out.print(root.data+" ");
-        printTree(root.left);
-        printTree(root.right);
-    }
-    static TreeNode insert(TreeNode root,int val){
-        if(root==null){
-            return new TreeNode(val);
-        }if(val<root.data){
-            root.left=insert(root.left, val);
-        }if(val>root.data){
-            root.right=insert(root.right, val);
-        }return root;
-    }
-
-    static TreeNode searchP(TreeNode root,int val){
-        if(root==null) return null;
-        if((root.left != null && root.left.data == val) || (root.right != null && root.right.data == val))return root;
-        TreeNode left=searchP(root.left, val);
-        TreeNode right=searchP(root.right, val);
-        return left==null ? right:left;
-    }
-
-    static TreeNode successor(TreeNode root){
-        TreeNode temp=root.left;
-        TreeNode pre=root;
-        while(temp.right!=null){
-            pre=temp;
-            temp=temp.right;
-        }
-        if(pre==root) pre.left=temp.left;
-        else pre.right=temp.left;
-        return temp;
-    }
-    static TreeNode delete(TreeNode root,int el){
-        if(root.data==el){
-            if(root.left==null) return root.right;
-            TreeNode temp=successor(root);
-            TreeNode curr=root;
-            temp.left=root.left;
-            temp.right=root.right;
-            curr=null;
-            return temp;
-        }else{
-            TreeNode parent=searchP(root, el);
-            boolean left=(parent.left.data==el)? true : false;
-            TreeNode node = null;
-            if(left) node = parent.left;
-            else node = parent.right;
-            if(node.left==null){
-                if(left) parent.left=node.right;
-                else parent.right=node.right;
-            }else{
-                TreeNode temp=successor(node);
-                TreeNode curr=node;
-                if(left) parent.left=temp;
-                else parent.right=temp;
-                if(node.left!=temp) temp.left=node.left;
-                if(node.right!=temp) temp.right=node.right;
-                curr=null;
-            }
-        }return root;
-    }
-    static void leftView(TreeNode root){
-        if(root==null) return;
-        Queue<TreeNode> q=new LinkedList<>();
-        q.offer(root);
-        while(!q.isEmpty()){
-            int n=q.size();
-            for(int i=0;i<n;i++){
-                TreeNode curr=q.poll();
-                if(i==0) System.out.print(curr.data+" ");
-                if(curr.left!=null) q.offer(curr.left);
-                if(curr.right!=null) q.offer(curr.right);
-            }
-        }
-    }
-
-    static void rightView(TreeNode root){
-        if(root==null) return;
-        Queue<TreeNode> q=new LinkedList<>();
-        q.offer(root);
-        while(!q.isEmpty()){
-            int n=q.size();
-            for(int i=0;i<n;i++){
-                TreeNode curr=q.poll();
-                if(i==n-1) System.out.print(curr.data+" ");
-                if(curr.left!=null) q.offer(curr.left);
-                if(curr.right!=null) q.offer(curr.right);
-            }
-        }
-    }
-
-    static class  Nel {
-        TreeNode node;
-        int col;
-        int row;
-        public Nel(TreeNode node,int row,int col){
-            this.node=node;
-            this.col=col;
-            this.row=row;
-        }        
-    }
-    static void topView(TreeNode root){
-        if(root==null) return;
-        TreeMap<Integer,List<Integer>> map=new TreeMap<>();
-        Queue<Nel> q=new LinkedList<>();
-        q.offer(new Nel(root, 0,0));
-        while(!q.isEmpty()){
-            int n=q.size();
-            for(int i=0;i<n;i++){
-                Nel p=q.poll();
-                TreeNode curr=p.node;
-                int row=p.row;
-                int col=p.col;
-                map.putIfAbsent(col, new ArrayList<>());
-                map.get(col).add(curr.data);
-                if(curr.left!=null) q.offer(new Nel(curr.left, row+1, col-1));
-                if(curr.right!=null) q.offer(new Nel(curr.right,row+1,col+1));
-            }
-        }for(int val:map.keySet()){
-            System.out.print(map.get(val).get(0)+" ");
-        }
-    }
     public static void main(String[] args){
-        int[] arr={20,8,4,12,10,14,22,25};
-        TreeNode root=null;
-        for(int val:arr){
-            root=insert(root, val);
-        }
-        root=delete(root, 20);
-        // printTree(root);
-        leftView(root);
-        System.out.println();
-        rightView(root);
-        System.out.println();
-        topView(root);
+        El[][] maze=new El[3][3];
+        maze[0][0]=new El(false,true,false,false);
+        maze[0][1]=new El(false,false,false,false);
+        maze[0][2]=new El(false,false,false,false);
+        maze[1][0]=new El(true,true,false,false);
+        maze[1][1]=new El(false,true,false,true);
+        maze[1][2]=new El(false,true,true,false);
+        maze[2][0]=new El(true,true,false,true);
+        maze[2][1]=new El(true,true,true,false);
+        maze[2][2]=new El(true,true,false,true);
+        List<int[]> list=new ArrayList<>();
+        boolean[][] visit=new boolean[3][3];
+        mazeSolve(maze, list, visit, 0, 0, 3);
+        int[][] grid={{2,7,3,4,5},{3,1,5,1,1},{4,2,8,3,3},{1,1,1,2,2},{2,4,4,2,6}};
+        System.out.println(gold(grid));
     }
 }

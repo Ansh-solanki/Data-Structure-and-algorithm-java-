@@ -63,61 +63,10 @@ public class DynamicProgramming {
         int min= Math.min(right,down);
         return Math.max(1,min-arr[i][j]);
     }
-    
-// DP on subsecquences
-    // using Recurssion
-    static boolean can1(int[] nums,int target,int i){
-        if(target==0) return true;
-        if(i==0) return (nums[0]==target);
-        boolean skip=can1(nums, target, i-1);
-        boolean take=false;
-        if(target>=nums[i]){
-            take=can1(nums, target-nums[i], i-1);
-        }return take||skip;
-    }
-    // memoization
-    static boolean can2(int[] nums,Boolean[][] dp, int target,int i){
-        if(target==0) return true;
-        if(i==0) return (nums[0]==target);
-        if(dp[i][target]!= null) return dp[i][target];
-        boolean skip=can2(nums,dp, target, i-1);
-        boolean take=false;
-        if(target>=nums[i]){
-            take=can2(nums,dp, target-nums[i], i-1);
-        }return dp[i][target] = take||skip;
-    }
-    static boolean can3(int[] nums,int target){
-        int n=nums.length;
-        boolean[] prev=new boolean[target+1];
-        prev[0]=true;
-        if(nums[0]<target) prev[nums[0]]=true;
-        for(int i=1;i<n;i++){
-            boolean[] curr=new boolean[target+1];
-            curr[0]=true;
-            for(int t=1;t<=target;t++){
-                boolean skip=prev[t];
-                boolean take=false;
-                if(nums[i]<=t){
-                    take=prev[t-nums[i]];
-                }curr[t]= skip || take;
-            }prev=curr;
-        }return prev[target];
-    }
-    static boolean canPartition(int[] nums){
-        if(nums.length<2) return false;
-        int n=nums.length;
-        int sum=0;
-        for(int val:nums){
-            sum+=val;
-        }if(sum%2!=0) return false;
-        sum/=2;
-        // Boolean[][] dp=new Boolean[n][sum+1];
-        return can3(nums, sum);
-    } 
     public static void main(String[] args){
-        int[] arr={1,2,3,5};
+        int[][] arr={{-2,-3,3},{-5,-10,1},{10,30,-5}};
         int[] dp=new int[arr.length];
         Arrays.fill(dp,-1);
-        System.out.println(canPartition(arr));
+        System.out.println(knight(arr, 0, 0, 3, 3));
     }
 }
