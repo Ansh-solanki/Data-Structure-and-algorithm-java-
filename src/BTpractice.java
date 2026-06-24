@@ -1,4 +1,5 @@
 import java.util.*;
+
 class Node{
     int data;
     Node left;
@@ -7,6 +8,24 @@ class Node{
         this.data=data;
         this.left=null;
         this.right=null;
+    }
+}
+class el{
+    int col;
+    Node node;
+    el(int col,Node node){
+        this.col=col;
+        this.node=node;
+    }
+}
+class Nel{
+    int row;
+    int col;
+    Node node;
+    Nel(int row,int col,Node node){
+        this.row=row;
+        this.col=col;
+        this.node=node;
     }
 }
 public class BTpractice {
@@ -92,9 +111,65 @@ public class BTpractice {
         DFS(root);
         return maxPath;
     }
-    public static void main(String[] args){
-        Integer[] arr={9,6,-3,null,null,-6,2,null,null,2,null,-6,-6,-6};
-        Node root=creation(arr);
-        System.out.println(maxPathSum(root));
+
+// Top view of Binary Tree
+    static void top(el curr,TreeMap<Integer,Integer> map){
+        int col=curr.col;
+        Node node=curr.node;
+        if(node==null) return;
+        if(!map.containsKey(col)){
+            map.put(col,node.data);
+        }
+        top(new el(col-1, node.left),map);
+        top(new el(col+1, node.right),map);
     }
+    static void topView(Node root){
+        if(root==null) return;
+        TreeMap<Integer,Integer> map=new TreeMap<>();
+        top(new el(0, root),map);
+        for(int val:map.values()){
+            System.out.print(val+" ");
+        }
+    }
+
+// Boottom view of a Binary Tree
+    static void bottomView(Node root){
+        if(root==null) return;
+        TreeMap<Integer,ArrayList<int[]>> map=new TreeMap<>();
+        Queue<Nel> q=new java.util.LinkedList<>();
+        q.offer(new Nel(0, 0, root));
+        while(!q.isEmpty()){
+            int n=q.size();
+            for(int i=0;i<n;i++){
+                Nel curr=q.poll();
+                Node node=curr.node;
+                int col=curr.col;
+                int row=curr.row;
+                map.putIfAbsent(col, new ArrayList<>());
+                if(map.get(col).isEmpty()){
+                    map.get(col).add(new int[]{node.data,row});
+                }else{
+                    if(map.get(col).get(0)[1]==row){
+                        map.get(col).add(new int[]{node.data,row});
+                    }
+                    else{
+                        map.get(col).clear();
+                        map.get(col).add(new int[]{node.data,row});    
+                    }
+                }
+                if(node.left!=null) q.offer(new Nel(row+1, col-1, node.left));
+                if(node.right!=null) q.offer(new Nel(row+1,col+1,node.right));
+            }
+        }
+        for(List<int[]> list:map.values()){
+            for(int[] arr:list){
+                System.out.print(arr[0]+" ");
+            }
+        }
+    }
+    public static void main(String[] args){
+        Integer[] arr={1,2,3,4,10,9,11,null,5};
+        Node root=creation(arr);
+        bottomView(root);
+   }
 }
